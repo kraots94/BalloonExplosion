@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
             Ray ray = mainCamera.ScreenPointToRay(position);
 
             // Se il raggio colpisce qualcosa
-            if (Physics.Raycast(ray, out RaycastHit hit, 100))
+            if (Physics.Raycast(ray, out RaycastHit hit, 100, ~0 , QueryTriggerInteraction.UseGlobal))
             {
                 Debug.Log($"HIT: {hit.transform.gameObject.name}");
 
