@@ -1,18 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 
 public class PlayerHand : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private void OnTriggerEnter(Collider other)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        GameObject hitGameObject = other.transform.gameObject;
+        Balloon balloon = hitGameObject.GetComponentInParent<Balloon>();
+        if (balloon != null)
+        {
+            balloon.BalloonHit();
+        }
     }
 }

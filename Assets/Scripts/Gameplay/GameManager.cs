@@ -15,15 +15,26 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("Punti ricevuti per ogni palloncino scoppiato")]
     [SerializeField, Range(5, 15)] private int pointsGain;
+    [Space(30)]
+    [SerializeField] private MainMenuUI nonImmersiveMainMenuUI;
+    [SerializeField] private GameUI nonImmersiveGameUI;
+    [SerializeField] private GameOverUI nonImmersiveGameOverUI;
 
-    [SerializeField] private MainMenuUI mainMenuUI;
-    [SerializeField] private GameUI gameUI;
-    [SerializeField] private GameOverUI gameOverUI;
+    [Space(30)]
+    [SerializeField] private MainMenuUI immersiveMainMenuUI;
+    [SerializeField] private GameUI immersiveGameUI;
+    [SerializeField] private GameOverUI immersiveGameOverUI;
 
+    [Space(30)]
     [SerializeField] private BalloonSpawner ballonSpawner;
+
+    private MainMenuUI _activeMainMenuUI;
+    private GameUI _activeGameUI;
+    private GameOverUI _activeGameOverUI;
 
     private enum GameState
     {
+        Loading,
         WaitToPlay,
         Playing,
         EndGame
@@ -36,17 +47,34 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        UpdateState(GameState.Loading);
     }
 
-    void Start()
+    public void LinkUI(PlatformManager.Platform platform) 
     {
+        switch (platform)
+        {
+            case PlatformManager.Platform.None:
+            case PlatformManager.Platform.PC:
+            case PlatformManager.Platform.SMARTPHONE:
+                _activeMainMenuUI = nonImmersiveMainMenuUI;
+                _activeGameUI = nonImmersiveGameUI;
+                _activeGameOverUI = nonImmersiveGameOverUI;
+                break;
+            case PlatformManager.Platform.VR:
+                _activeMainMenuUI = immersiveMainMenuUI;
+                _activeGameUI = immersiveGameUI;
+                _activeGameOverUI = immersiveGameOverUI;
+                break;
+        }
+
         LoadMainMenu();
     }
 
     public void LoadMainMenu()
     {
         int currentHighScore = PlayerPrefs.GetInt(highscoreLabelPlayerPrefs, 0);
-        mainMenuUI.UpdateUI(currentHighScore);
+        _activeMainMenuUI.UpdateUI(currentHighScore);
         UpdateState(GameState.WaitToPlay);
     }
 
@@ -54,7 +82,7 @@ public class GameManager : MonoBehaviour
     {
         points = 0;
         timer = gameplayTime;
-        gameUI.UpdateScore(points);
+        _activeGameUI.UpdateScore(points);
         ballonSpawner.EnableSpawner(timeToNextBaloon);
 
         UpdateState(GameState.Playing);
@@ -80,7 +108,7 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        gameOverUI.UpdateUI(points, newHighScore);
+        _activeGameOverUI.UpdateUI(points, newHighScore);
         UpdateState(GameState.EndGame);
     }
 
@@ -98,7 +126,7 @@ public class GameManager : MonoBehaviour
                     GameOver();
                 }
 
-                gameUI.UpdateTime(timer);
+                _activeGameUI.UpdateTime(timer);
                 break;
             case GameState.EndGame:
                 break;
@@ -108,7 +136,7 @@ public class GameManager : MonoBehaviour
     public void BalloonPop()
     {
         points += pointsGain;
-        gameUI.UpdateScore(points);
+        _activeGameUI.UpdateScore(points);
     }
 
     public void DestroyAllBalloons()
@@ -131,20 +159,24 @@ public class GameManager : MonoBehaviour
         // Mostrare l'interfaccia corretta
         switch (_currentState)
         {
+            case GameState.Loading:
+                break;
             case GameState.WaitToPlay:
-                mainMenuUI.Show();
-                gameUI.Hide();
-                gameOverUI.Hide();
+                _activeMainMenuUI.Show();
+                _activeGameUI.Hide();
+                _activeGameOverUI.Hide();
                 break;
             case GameState.Playing:
-                mainMenuUI.Hide();
-                gameUI.Show();
-                gameOverUI.Hide();
+                _activeMainMenuUI.Hide();
+                _activeGameUI.Show();
+                _activeGameOverUI.Hide();
                 break;
             case GameState.EndGame:
-                mainMenuUI.Hide();
-                gameUI.Hide();
-                gameOverUI.Show();
+                _activeMainMenuUI.Hide();
+                _activeGameUI.Hide();
+                _activeGameOverUI.Show();
+                break;
+            default:
                 break;
         }
     }
