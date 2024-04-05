@@ -5,26 +5,40 @@ using TMPro;
 
 public class GameUI : MonoBehaviour
 {
-    [SerializeField] TMP_Text scoreLabel;
-    [SerializeField] TMP_Text timeLabel;
+    [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text timeText;
+
+    public void ResetUI()
+    {
+        scoreText.text = "0";
+        timeText.text = "00:00";
+    }
 
     public void UpdateScore(int score)
     {
-        scoreLabel.text = score.ToString();
+        scoreText.text = score.ToString();
     }
 
     public void UpdateTime(float time)
     {
-        // Calcolo quanti minuti e secondi 
         int minutes = Mathf.FloorToInt(time) / 60;
         int seconds = Mathf.FloorToInt(time) % 60;
 
-        // Creo la string nel formato mm:ss
         string timeString = "";
         timeString += minutes > 9 ? minutes.ToString() : "0" + minutes.ToString();
         timeString += ":";
         timeString += seconds > 9 ? seconds.ToString() : "0" + seconds.ToString();
 
-        timeLabel.text = timeString;
+        timeText.text = timeString;
+    }
+
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void Show()
+    {
+        gameObject.SetActive(true);
     }
 }

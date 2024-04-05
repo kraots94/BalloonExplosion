@@ -41,7 +41,7 @@ AudioSource:
   m_GameObject: {fileID: 1612381347615687719}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7968817222461379106, guid: fa746e941d6de6e46b2ad359bd846737, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -181,6 +181,8 @@ MonoBehaviour:
   popEffect: {fileID: 8300000, guid: 0bea43ede79dea24b9644e39f927f963, type: 3}
   inflatingEffect: {fileID: 8300000, guid: 40153ea628bfabc4499097abff23d09f, type: 3}
   explosionSystem: {fileID: 5506432460508146898}
+  minScale: 3
+  maxScale: 12
 --- !u!1 &8670699977871326445
 GameObject:
   m_ObjectHideFlags: 0

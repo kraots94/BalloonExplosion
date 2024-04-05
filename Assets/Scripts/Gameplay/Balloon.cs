@@ -12,7 +12,9 @@ public class Balloon : MonoBehaviour
     [SerializeField] private AudioClip popEffect;
     [SerializeField] private AudioClip inflatingEffect;
     [SerializeField] private ParticleSystem explosionSystem;
-    
+    [SerializeField, Range(1f, 15f)] private float minScale;
+    [SerializeField, Range(1f, 15f)] float maxScale;
+
     private Color _myColor;
 
     private bool _isDestroying;
@@ -20,7 +22,7 @@ public class Balloon : MonoBehaviour
     public void BalloonHit()
     {
         if (_isDestroying) return;
-        GameManager.Instance.AddPoints();
+        GameManager.Instance.BalloonPop();
         DestroyBalloon();
     }
 
@@ -35,8 +37,8 @@ public class Balloon : MonoBehaviour
     {
         PlayAudioClip(popEffect);
         balloonRenderer.enabled = false;
-        var mainPS = explosionSystem.main;
-        mainPS.startColor = _myColor;
+        var mainParticleSystem = explosionSystem.main;
+        mainParticleSystem.startColor = _myColor;
         explosionSystem.Play();
         yield return new WaitForSeconds(popEffect.length);
 
@@ -50,8 +52,6 @@ public class Balloon : MonoBehaviour
         float soundLength = inflatingEffect.length;
         int stepsPerSeconds = 30; // assuming 30fps 
         int totalSteps = Mathf.FloorToInt(soundLength * stepsPerSeconds);
-        float minScale = 1;
-        float maxScale = 7;
 
         for (float s = 0; s < totalSteps; s++)
         {
